@@ -5,7 +5,7 @@ class GitoliteObserver < ActiveRecord::Observer
 #  def before_create(object)
 #    if object.is_a?(Project)
 #      repo = Repository::Git.new
-#      repo.url = repo.root_url = File.join(Gitolite::GITOSIS_BASE_PATH,"#{object.identifier}.git")
+#      repo.url = repo.root_url = File.join(GitoliteRedmine::GITOSIS_BASE_PATH,"#{object.identifier}.git")
 #      object.repository = repo
 #    end
 #  end
@@ -17,11 +17,11 @@ class GitoliteObserver < ActiveRecord::Observer
   
   def update_repositories(object)
     case object
-      when Repository then Gitolite::update_repositories(object.project)
-      when User then Gitolite::update_repositories(object.projects) unless is_login_save?(object)
-      when GitolitePublicKey then Gitolite::update_repositories(object.user.projects)
-      when Member then Gitolite::update_repositories(object.project)
-      when Role then Gitolite::update_repositories(object.members.map(&:project).uniq.compact)
+      when Repository then GitoliteRedmine::update_repositories(object.project)
+      when User then GitoliteRedmine::update_repositories(object.projects) unless is_login_save?(object)
+      when GitolitePublicKey then GitoliteRedmine::update_repositories(object.user.projects)
+      when Member then GitoliteRedmine::update_repositories(object.project)
+      when Role then GitoliteRedmine::update_repositories(object.members.map(&:project).uniq.compact)
     end
   end
   

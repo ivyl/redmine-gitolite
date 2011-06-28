@@ -23,7 +23,7 @@ class GitolitePublicKey < ActiveRecord::Base
   end
   
   def set_identifier
-    self.identifier ||= "#{self.user.login.underscore}-#{self.title.underscore}-#{self.id}".gsub(/[^0-9a-zA-Z-_]/,'_')
+    self.identifier ||= "#{self.user.login.underscore}@#{self.title.underscore}".gsub(/[^0-9a-zA-Z-_]/,'_')
   end
     
   def to_s ; title ; end

@@ -1,5 +1,5 @@
 require_dependency 'redmine/scm/adapters/git_adapter'
-module Gitolite
+module GitoliteRedmine
   module Patches
     module GitAdapterPatch
       
@@ -137,4 +137,4 @@ module Gitolite
     end
   end
 end
-Redmine::Scm::Adapters::GitAdapter.send(:include, Gitolite::Patches::GitAdapterPatch) unless Redmine::Scm::Adapters::GitAdapter.include?(Gitolite::Patches::GitAdapterPatch)
+Redmine::Scm::Adapters::GitAdapter.send(:include, GitoliteRedmine::Patches::GitAdapterPatch) unless Redmine::Scm::Adapters::GitAdapter.include?(GitoliteRedmine::Patches::GitAdapterPatch)

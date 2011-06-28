@@ -1,5 +1,5 @@
 require_dependency 'repositories_controller'
-module Gitolite
+module GitoliteRedmine
   module Patches
     module RepositoriesControllerPatch
 
@@ -33,4 +33,4 @@ module Gitolite
     end
   end
 end
-RepositoriesController.send(:include, Gitolite::Patches::RepositoriesControllerPatch) unless RepositoriesController.include?(Gitolite::Patches::RepositoriesControllerPatch)
+RepositoriesController.send(:include, GitoliteRedmine::Patches::RepositoriesControllerPatch) unless RepositoriesController.include?(GitoliteRedmine::Patches::RepositoriesControllerPatch)

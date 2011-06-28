@@ -1,9 +1,9 @@
 require 'lockfile'
-require 'inifile'
+require 'gitolite'
 require 'net/ssh'
 require 'tmpdir'
 
-module Gitolite
+module GitoliteRedmine
   def self.renderReadOnlyUrls(baseUrlStr, projectId,parent)
     rendered = ""
     if (baseUrlStr.length == 0)
@@ -57,7 +57,7 @@ module Gitolite
 		@recursionCheck = true
 
 		# Don't bother doing anything if none of the projects we've been handed have a Git repository
-		unless projects.detect{|p|  p.repository.is_a?(Repository::Git) }.nil?
+		unless projects.detect{|p|  p.repository.is_a?(Repository::Git)}.nil?
 
 			lockfile=File.new(File.join(RAILS_ROOT,"tmp",'redmine_gitolite_lock'),File::CREAT|File::RDONLY)
 			retries=5
@@ -77,9 +77,10 @@ module Gitolite
 			Dir.mkdir local_dir
 
 			# clone repo
-			`git clone #{Setting.plugin_redmine_gitolite['gitoliteUrl']} #{local_dir}/gitolite`
+			`git clone #{Setting.plugin_redmine_gitolite['gitoliteUrl']} #{local_dir}/repo`
+      
+      ga_repo = Gitolite::GitoliteAdmin.new "#{local_dir}/repo"
 
-			changed = false
 			projects.select{|p| p.repository.is_a?(Repository::Git)}.each do |project|
 				# fetch users
 				users = project.member_principals.map(&:user).compact.uniq
@@ -87,69 +88,57 @@ module Gitolite
 				read_users = users.select{ |user| user.allowed_to?( :view_changesets, project ) && !user.allowed_to?( :commit_access, project ) }
 				# write key files
 				users.map{|u| u.gitolite_public_keys.active}.flatten.compact.uniq.each do |key|
-					File.open(File.join(local_dir, 'gitolite/keydir',"#{key.identifier}.pub"), 'w') {|f| f.write(key.key.gsub(/\n/,'')) }
+          parts = key.key.split
+          k = ga_repo.ssh_keys[key.user.login.underscore].find_all{|k|k.location = key.title.underscore}.first
+          if k
+            k.type = parts[0]
+            k.blob = parts[1]
+            k.email = parts[2]
+            k.owner = key.user.login.underscore
+          else
+            k = Gitolite::SSHKey.new(parts[0], parts[1], parts[2])
+            k.location = key.title.underscore
+            k.owner = key.user.login.underscore
+            ga_repo.add_key k
+          end
 				end
 
 				# delete inactives
 				users.map{|u| u.gitolite_public_keys.inactive}.flatten.compact.uniq.each do |key|
-					File.unlink(File.join(local_dir, 'gitolite/keydir',"#{key.identifier}.pub")) rescue nil
+          k = ga_repo.ssh_keys[key.user.login.underscore].find_all{|k|k.location = key.title.underscore}.first
+					ga_repo.rm_key k if k
 				end
-
+      
 				# write config file
-				conf = IniFile.new(File.join(local_dir,'gitolite','gitolite.conf'))
+        name = "#{project.identifier}"
+				conf = ga_repo.config.repos[name]
+        unless conf
+          conf = Gitolite::Config::Repo.new(name)
+          ga_repo.add_repo(conf)
+        end
 				original = conf.clone
-				name = "#{project.identifier}"
-
-				conf["group #{name}_readonly"]['readonly'] = name
-				conf["group #{name}_readonly"]['members'] = read_users.map{|u| u.gitolite_public_keys.active}.flatten.map{ |key| "#{key.identifier}" }.join(' ')
-
-				conf["group #{name}"]['writable'] = name
-				conf["group #{name}"]['members'] = write_users.map{|u| u.gitolite_public_keys.active}.flatten.map{ |key| "#{key.identifier}" }.join(' ')
-
-				# git-daemon support for read-only anonymous access
-				if User.anonymous.allowed_to?( :view_changesets, project )
-					conf["repo #{name}"]['daemon'] = 'yes'
-				else
-					conf["repo #{name}"]['daemon'] = 'no'
-				end
-				# Enable/disable gitweb
-				if User.anonymous.allowed_to?( :view_gitweb, project )
-					conf["repo #{name}"]['gitweb'] = 'yes'
-				else
-					conf["repo #{name}"]['gitweb'] = 'no'
-				end
-
-				unless conf.eql?(original)
-					conf.write 
-					changed = true
-				end
-
+        
+        write = write_users.map{|usr| usr.login.underscore}
+        
+        read = read_users.map{|usr| usr.login.underscore}
+        read << "daemon" if User.anonymous.allowed_to?(:view_changesets, project)
+        read << "gitweb" if User.anonymous.allowed_to?(:view_gitweb, project)
+        
+        permissions = {}
+        permissions["RW+"] = {"" => write} unless write.empty?
+        permissions["R"] = {"" => read} unless read.empty?
+        conf.permissions = [permissions]
 			end
-			if changed
-				git_push_file = File.join(local_dir, 'git_push.bat')
-
-	      new_dir= File.join(local_dir,'gitolite')
-				new_dir.gsub!(/\//, '\\')
-				File.open(git_push_file, "w") do |f|
-					f.puts "cd #{new_dir}"
-					f.puts "git add keydir/* gitolite.conf"
-					f.puts "git config user.email '#{Setting.mail_from}'"
-					f.puts "git config user.name 'Redmine'"
-					f.puts "git commit -a -m 'updated by Redmine Gitolite'"
-					f.puts "git push"
-				end
-				File.chmod(0755, git_push_file)
-
-				# add, commit, push, and remove local tmp dir
-				`#{git_push_file}`
-			end
-			# remove local copy
-			`rm -Rf #{local_dir}`
+      
+      ga_repo.save
+      ga_repo.apply
+			
+      #remove local copy
+		  `rm -Rf #{local_dir}`
 
 			lockfile.flock(File::LOCK_UN)
 		end
 		@recursionCheck = false
-
 	end
 	
 end

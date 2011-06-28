@@ -2,7 +2,7 @@ require 'redmine'
 require_dependency 'principal'
 require_dependency 'user'
 
-require_dependency 'gitolite'
+require_dependency 'gitolite-redmine'
 require_dependency 'gitolite/patches/repositories_controller_patch'
 require_dependency 'gitolite/patches/repositories_helper_patch'
 require_dependency 'gitolite/patches/git_adapter_patch'
