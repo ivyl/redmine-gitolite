@@ -24,7 +24,7 @@ module GitoliteRedmine
     
     return rendered
   end
-  
+
 	def self.renderUrls(baseUrlStr, projectId, isReadOnly, parent)
 		rendered = ""
 		if(baseUrlStr.length == 0)
@@ -118,12 +118,14 @@ module GitoliteRedmine
         end
 				original = conf.clone
         
-        write = write_users.map{|usr| usr.login.underscore}
+        write = write_users.map{|usr| usr.login.underscore}.sort
         
-        read = read_users.map{|usr| usr.login.underscore}
+        read = read_users.map{|usr| usr.login.underscore}.sort
         read << "daemon" if User.anonymous.allowed_to?(:view_changesets, project)
         read << "gitweb" if User.anonymous.allowed_to?(:view_gitweb, project)
         
+        read << "redmine"
+
         permissions = {}
         permissions["RW+"] = {"" => write} unless write.empty?
         permissions["R"] = {"" => read} unless read.empty?
