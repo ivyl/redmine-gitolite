@@ -4,48 +4,6 @@ require 'net/ssh'
 require 'tmpdir'
 
 module GitoliteRedmine
-  def self.renderReadOnlyUrls(baseUrlStr, projectId,parent)
-    rendered = ""
-    if (baseUrlStr.length == 0)
-      return rendered
-    end
-    
-    baseUrlList = baseUrlStr.split("%p")
-    if (not defined?(baseUrlList.length))
-      return rendered
-    end
-    
-    rendered = rendered + "<strong>Read Only Url:</strong><br />"
-    rendered = rendered + "<ul>"
-    
-    rendered = rendered + "<li>" + baseUrlList[0] +(parent ? "" : "/"+parent+"/")+ projectId + baseUrlList[1] + "</li>"
-    
-    rendered = rendered + "</ul>\n"
-    
-    return rendered
-  end
-
-	def self.renderUrls(baseUrlStr, projectId, isReadOnly, parent)
-		rendered = ""
-		if(baseUrlStr.length == 0)
-			return rendered
-		end
-		baseUrlList=baseUrlStr.split(/[\r\n\t ,;]+/)
-
-		if(not defined?(baseUrlList.length))
-			return rendered
-		end
-
-
-		rendered = rendered + "<strong>" + (isReadOnly ? "Read Only" : "Developer") + " " + (baseUrlList.length == 1 ? "URL" : "URLs") + ": </strong><br/>"
-				rendered = rendered + "<ul>";
-				for baseUrl in baseUrlList do
-						rendered = rendered + "<li>" + "<span style=\"width: 95%; font-size:10px\">" + baseUrl+ (parent ? "" : "/"+parent+"/") + projectId + ".git</span></li>"
-				end
-		rendered = rendered + "</ul>\n"
-		return rendered
-	end 
-
 	def self.update_repositories(projects)
 		projects = (projects.is_a?(Array) ? projects : [projects])
 	

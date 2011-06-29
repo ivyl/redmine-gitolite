@@ -1,12 +1,29 @@
 <% if @project.repository && @project.repository.is_a?(Repository::Git) %>
 <div class="box">
 	<h3>Git Repository</h3>
-	<p>
-		<%= GitoliteRedmine::renderReadOnlyUrls(Setting.plugin_redmine_gitolite['readOnlyBaseUrls'], @project.identifier, @project.parent.identifier || false) %>
+  <p>
+    <% baseUrlStr = Setting.plugin_redmine_gitolite['readOnlyBaseUrls'] -%>
+    <% unless baseUrlStr.empty? %>
+      <strong>Read Only Url:</strong><br />
+      <ul>
+        <% baseUrlStr.lines.each do |url| %>
+          <% result = url.gsub("%{name}", @project.identifier) -%>
+          <li><%= link_to result, result %></li>
+        <% end %>
+      </ul>
+    <% end %>
 	</p>
-	<p>
-		<%= GitoliteRedmine::renderUrls(Setting.plugin_redmine_gitolite['developerBaseUrls'], @project.identifier, false,@project.parent.identifier || false)  %>
-
+  <p>
+    <% baseUrlStr = Setting.plugin_redmine_gitolite['developerBaseUrls'] %>
+    <% unless baseUrlStr.empty? %>
+    <strong>Read Only Url:</strong><br />
+    <ul>
+      <% baseUrlStr.lines.each do |url| %>
+        <% result = url.gsub("%{name}", @project.identifier) -%>
+        <li><%= link_to result, result %></li>
+      <% end %>
+    </ul>
+    <% end %>
 	</p>
 </div>
 <% end %>
