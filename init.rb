@@ -9,13 +9,12 @@ require_dependency 'gitolite/patches/git_adapter_patch'
 
 Redmine::Plugin.register :redmine_gitolite do
   name 'Redmine Gitolite plugin'
-  author 'Arkadiusz Hiler, Joshua Hogendorn, Jan Schulz-Hofen'
-  description 'Enables Redmine to update a gitolite server.'
+  author 'Arkadiusz Hiler, Joshua Hogendorn, Jan Schulz-Hofen, Kah Seng Tay, Jakob Skjerning'
+  description 'Enables Redmine to manage gitolite repositorie.'
   version '0.0.1'
   settings :default => {
     'gitoliteUrl' => 'gitolite@localhost:gitolite-admin.git',
-    'gitoliteIdentityFile' => '/srv/projects/redmine/miner/.ssh/id_rsa',
-    'developerBaseUrls' => 'git@www.salamander-linux.com:,https://[user]@www.salamander-linux.com/git/',
+    'developerBaseUrls' => "git@example.com:%{name}.git",
     'readOnlyBaseUrls' => 'http://example.com/git/%{name}',
     'basePath' => '/home/redmine/repositories/',
     }, 
