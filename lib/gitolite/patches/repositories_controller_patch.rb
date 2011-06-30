@@ -14,9 +14,9 @@ module GitoliteRedmine
       def edit_with_scm_settings
         params[:repository] ||= {}
         if(@project.parent)
-          params[:repository][:url] = File.join(Setting.plugin_redmine_gitolite['basePath'],@project.parent.identifier,"#{@project.identifier}.git") if  params[:repository_scm] == 'Git'
+          params[:repository][:url] = File.join(Setting.plugin_redmine_gitolite['basePath'],@project.parent.identifier, @project.identifier}.git) if  params[:repository_scm] == 'Git'
         else
-          params[:repository][:url] = File.join(Setting.plugin_redmine_gitolite['basePath'],"#{@project.identifier}.git") if  params[:repository_scm] == 'Git'
+          params[:repository][:url] = File.join(Setting.plugin_redmine_gitolite['basePath'],@project.identifier) if  params[:repository_scm] == 'Git'
         end  
         
         edit_without_scm_settings

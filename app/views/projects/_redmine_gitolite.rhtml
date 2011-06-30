@@ -4,7 +4,7 @@
   <p>
     <% baseUrlStr = Setting.plugin_redmine_gitolite['readOnlyBaseUrls'] -%>
     <% unless baseUrlStr.empty? %>
-      <strong>Read Only Url:</strong><br />
+      <strong>Read Only URL:</strong><br />
       <ul>
         <% baseUrlStr.lines.each do |url| %>
           <% result = url.gsub("%{name}", @project.identifier) -%>
@@ -16,7 +16,7 @@
   <p>
     <% baseUrlStr = Setting.plugin_redmine_gitolite['developerBaseUrls'] %>
     <% unless baseUrlStr.empty? %>
-    <strong>Read Only Url:</strong><br />
+    <strong>Developer URL:</strong><br />
     <ul>
       <% baseUrlStr.lines.each do |url| %>
         <% result = url.gsub("%{name}", @project.identifier) -%>
