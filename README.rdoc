@@ -1,23 +1,38 @@
 = redmine-gitolite
 
 == About
+https://github.com/kahseng/redmine_gitolite_hook
+https://github.com/jhogendorn/redmine-gitolite
 
-A Redmine plugin which manages your gitolite configuration based on your projects and memberships in Redmine. Includes Public Key management views (extracted from http://plan.io).
+This is Redmine Gitolite Hook combined with redmine-gitolite
 
-This plugin was originally developed by Jan Schulz-Hofen for http://plan.io.  Several updates/fixes were provided by github users untoldwind, tingar and ericpaulbishop. These updates were merged together and expanded upon by Eric Bishopi.
+A Redmine plugin which manages your gitolite configuration based on your projects and memberships in Redmine.
 
-Now some of the functionalities have been rewriten by Arkadiusz Hiler.
+Provides gitolite hook, for automaticaly pulling changes to 
 
-In order to use this plugin you must have the following gems installed:
-
-lockfile
-
-gitolite
-
-net-ssh
+Includes Public Key management views (extracted from http://plan.io).
 
 
-== Configuration
+
+== Requirements:
+
+=== Gems:
+* lockfile
+* gitolite
+* net-ssh
+
+=== Other:
+* gitolite server
+* accessible git executable
+
+
+== Setup:
+
+1. Install redmine and put this plugin in vendor/plugins directory.
+2. User running redmine (his key must be named named "redmine") must have RW+ access gitolite-configuration (assuming that you have gitolite installed).
+3.
+
+
 
 
 

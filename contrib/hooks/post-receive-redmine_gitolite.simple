@@ -1,0 +1,25 @@
+#!/bin/sh
+#
+# The "post-receive" script is run after receive-pack has accepted a pack
+# and the repository has been updated.  It is passed arguments in through
+# stdin in the form
+#  <oldrev> <newrev> <refname>
+# For example:
+#  aa453216d1b3e49e7f6f98441fa56946ddcd6a20 68f7abf4e6f922807889f52bc043ecd31b79f814 refs/heads/master
+
+REDMINE_SERVER=http://your.redmine.server.com
+HOOK_URL=gitolite_hook
+FETCH_URL=sys/fetch_changesets
+KEY=your_redmine_api_key
+LOG=/home/git/logs/post-receive.log
+
+# Read from stdin
+while read old new refname; do
+   echo "Post-receive hook for this repo: [$GL_REPO] $old $new $refname"
+   # Hit the Redmine Gitolite hook for this repo
+   curl -d "oldrev=$old&newrev=$new&refname=$refname&user=$GL_USER" "$REDMINE_SERVER/$HOOK_URL?project_id=$GL_REPO"
+   # Hit the fetch changesets URL
+   curl "$REDMINE_SERVER/$FETCH_URL?id=$GL_REPO&key=$KEY"
+   echo "Done."
+   echo ""
+done
