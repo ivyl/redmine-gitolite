@@ -1,61 +1,63 @@
 = redmine-gitolite
 
-== About
-https://github.com/kahseng/redmine_gitolite_hook
-https://github.com/jhogendorn/redmine-gitolite
+This is {Redmine Gitolite Hook}[https://github.com/kahseng/redmine_gitolite_hook] combined with {redmine-gitolite}[https://github.com/jhogendorn/redmine-gitolite]
 
-This is Redmine Gitolite Hook combined with redmine-gitolite
+A Redmine plugin which manages your gitolite configuration based on your projects and user memberships in Redmine.
 
-A Redmine plugin which manages your gitolite configuration based on your projects and memberships in Redmine.
-
-Provides gitolite hook, for automaticaly pulling changes to 
+Provides Gitolite hook, for automaticaly pulling changes to 
 
 Includes Public Key management views (extracted from http://plan.io).
-
-
 
 == Requirements:
 
 === Gems:
 * lockfile
-* gitolite
+* {gitolite}[https://github.com/wingrunr21/gitolite/] (works with 1.8.7)
 
 === Other:
-* gitolite server
-* accessible git executable
+* Gitolite server
+* accessible Git executable
 
 
 == Setup:
-
-1. Install redmine and put this plugin in vendor/plugins directory and migrate
+1. Install Redmine and put this plugin in vendor/plugins directory and migrate
 database (plugins)
-  * cd redmine/vendor/plugins
-  * git clone ...
-  * rake db:migrate_plugins
+  $ cd redmine/vendor/plugins
+  $ git clone git://github.com/ivyl/redmine-gitolite.git
+  $ rake db:migrate_plugins
 
-2. User running redmine (his key must be named named "redmine") must have RW+ access gitolite-configuration (assuming that you have gitolite installed).
+2. User running redmine (his key must be named named "redmine") must have RW+ access to gitolite-admin (assuming that you have gitolite installed).
 
 3. Make sure that redmine user has gitolite server in his known_host list
-  * sudo su - redmine
-  * ssh gitolite.server
+  $ sudo su - redmine
+  $ ssh gitolite.server
   * [accept key]
 
-4. Add update hook to common gitolite hooks (one of examples) and configure it
-(host, api key, etc)
-  * sudo su - gitolite
-  * cat > .gitolite/hooks/common/update
+4. Add update hook to common gitolite hooks (examples in contrib dir) and configure it
+(host, api key, etc, see sources)
+  $ sudo su - gitolite
+  $ cat > .gitolite/hooks/common/update
   * [paste hook]
-  * vim .gitolite/hooks/common/update
-  * [configure, in complex hook you can do this by settin git config options]
-  * chmod +x .gitolite/hooks/common/update
+  $ vim .gitolite/hooks/common/update
+  * [enable WS for repository management in administration repository settings]
+  * [copy generated API key]
+  * [configure, in complex hook you can do this by git config options]
+  $ chmod +x .gitolite/hooks/common/update
 
 5. Configure plugin in redmine settings
-  * plugin settings
-  * set host and repository dir
-  * don't forget to create repository dir
+  * [Adminitration -> Plugins -> Redmine Gitolite]
+  * [Gitolite URL should be set to your gitolite-admin git repository]
+  * [Base path should point directory which will hold local copies (must exist)
+  * [Set developer and ro urls as in given examples (just slightly modify them)]
+  * [%{name} will be replaced with your repository identifier]
 
 == Pro Tips:
 
 * You should manage your keys only from Redmine to avoid conflicts.
 * Need new bare git repo? Create it via Redmine, disable other features.
 * This is most convinient way to manage keys by your user.
+
+== Found bug?
+
+Open new issue and complain. You can also fix it and sent pull request.
+This plugin is in active usage in current, edge Redmine. Any suggestions are welcome.
