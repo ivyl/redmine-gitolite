@@ -72,9 +72,8 @@ module GitoliteRedmine
 				conf = ga_repo.config.repos[name]
         unless conf
           conf = Gitolite::Config::Repo.new(name)
-          ga_repo.add_repo(conf)
+          ga_repo.config.add_repo(conf)
         end
-				original = conf.clone
         
         write = write_users.map{|usr| usr.login.underscore}.sort
         
