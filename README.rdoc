@@ -36,7 +36,7 @@ database (plugins)
 4. Add update hook to common gitolite hooks (examples in contrib dir) and configure it
 (host, api key, etc, see sources)
   $ sudo su - gitolite
-  $ cat > .gitolite/hooks/common/update
+  $ cat > .gitolite/hooks/common/post-receive
   * [paste hook]
   $ vim .gitolite/hooks/common/update
   * [enable WS for repository management in administration repository settings]
