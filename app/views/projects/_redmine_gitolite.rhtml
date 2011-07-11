@@ -3,7 +3,7 @@
 	<h3>Git Repository</h3>
   <p>
     <% baseUrlStr = Setting.plugin_redmine_gitolite['readOnlyBaseUrls'] -%>
-    <% unless baseUrlStr.empty? %>
+    <% if !baseUrlStr.empty? && User.current.allowed_to?(:view_changesets, @project)  %>
       <strong>Read Only URL:</strong><br />
       <ul>
         <% baseUrlStr.lines.each do |url| %>
@@ -15,7 +15,7 @@
 	</p>
   <p>
     <% baseUrlStr = Setting.plugin_redmine_gitolite['developerBaseUrls'] %>
-    <% unless baseUrlStr.empty? %>
+    <% if !baseUrlStr.empty? && User.current.allowed_to?(:commit_access, @project) %>
     <strong>Developer URL:</strong><br />
     <ul>
       <% baseUrlStr.lines.each do |url| %>
