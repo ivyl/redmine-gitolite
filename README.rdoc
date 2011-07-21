@@ -39,7 +39,7 @@ database (plugins)
   $ cat > .gitolite/hooks/common/post-receive
   * [paste hook]
   $ vim .gitolite/hooks/common/post-receive
-  * [enable WS for repository management in administration repository settings]
+  * [enable WS for repository management in administration->settings->repositories]
   * [copy generated API key]
   * [configure, in complex hook you can do this by git config options]
   $ chmod +x .gitolite/hooks/common/receive
