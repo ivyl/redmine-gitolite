@@ -47,7 +47,7 @@ module GitoliteRedmine
 				# write key files
 				users.map{|u| u.gitolite_public_keys.active}.flatten.compact.uniq.each do |key|
           parts = key.key.split
-          k = ga_repo.ssh_keys[key.user.login.underscore].find_all{|k|k.location = key.title.underscore}.first
+          k = ga_repo.ssh_keys[key.user.login.underscore].find_all{|k|k.location == key.title.underscore && k.owner == key.user.login.underscore}.first
           if k
             k.type = parts[0]
             k.blob = parts[1]
@@ -63,7 +63,7 @@ module GitoliteRedmine
 
 				# delete inactives
 				users.map{|u| u.gitolite_public_keys.inactive}.flatten.compact.uniq.each do |key|
-          k = ga_repo.ssh_keys[key.user.login.underscore].find_all{|k|k.location = key.title.underscore}.first
+          k = ga_repo.ssh_keys[key.user.login.underscore].find_all{|k|k.location == key.title.underscore && k.owner == key.user.login.underscore}.first
 					ga_repo.rm_key k if k
 				end
       
