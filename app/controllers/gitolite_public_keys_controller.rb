@@ -26,6 +26,15 @@ class GitolitePublicKeysController < ApplicationController
   end
 
   def update
+    if params[:public_key][:active]
+      status = params[:public_key].delete :active
+      if status == "true"
+        @gitolite_public_key.active = true
+      elsif status == "false"
+        @gitolite_public_key.active = false
+      end
+    end
+
     if @gitolite_public_key.update_attributes(params[:public_key])
       flash[:notice] = l(:notice_public_key_updated)
       redirect_to url_for(:action => 'index', :status => session[:gitolite_public_key_filter_status])
