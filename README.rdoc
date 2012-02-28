@@ -11,6 +11,7 @@ Includes Public Key management views (extracted from http://plan.io).
 == Requirements:
 
 === Gems:
+* net-ssh (ruby 1.9)
 * lockfile
 * {gitolite}[https://github.com/wingrunr21/gitolite/] (works with 1.8.7)
 
