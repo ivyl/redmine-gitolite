@@ -13,9 +13,11 @@ class GitolitePublicKeysController < ApplicationController
     else 
       params[:status].to_i != 0
     end
-    c = ARCondition.new(@status ? ["active=?", @status] : nil)
+    
+    scope = @user.gitolite_public_keys
+    scope = scope.scoped(:conditions => ["active=?", @status]) if @status
+    @gitolite_public_keys = scope.all(:order => 'active DESC, created_at DESC')
 
-    @gitolite_public_keys = @user.gitolite_public_keys.all(:order => 'active DESC, created_at DESC', :conditions => c.conditions)
     respond_to do |format|
       format.html # index.html.erb
       format.json  { render :json => @gitolite_public_keys }
