@@ -30,9 +30,9 @@ class GitolitePublicKeysController < ApplicationController
   def update
     if params[:public_key][:active]
       status = params[:public_key].delete :active
-      if status == "true"
+      if status == GitolitePublicKey::STATUS_ACTIVE
         @gitolite_public_key.active = true
-      elsif status == "false"
+      elsif status == GitolitePublicKey::STATUS_LOCKED
         @gitolite_public_key.active = false
       end
     end
