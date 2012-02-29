@@ -102,7 +102,7 @@ module GitoliteRedmine
 			end
 			@recursionCheck = false
 
-	    rescue Exception => e:
+	    rescue Exception => e
 	      @recursionCheck = false
 	    end
 	end
