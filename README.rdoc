@@ -1,5 +1,7 @@
 = redmine-gitolite
 
+CURRENT HEAD VERSION WORKS WITH TRUNK REDMINE
+
 This is {Redmine Gitolite Hook}[https://github.com/kahseng/redmine_gitolite_hook] combined with {redmine-gitolite}[https://github.com/jhogendorn/redmine-gitolite]
 
 A Redmine plugin which manages your gitolite configuration based on your projects and user memberships in Redmine.
