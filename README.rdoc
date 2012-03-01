@@ -4,7 +4,7 @@ This is {Redmine Gitolite Hook}[https://github.com/kahseng/redmine_gitolite_hook
 
 A Redmine plugin which manages your gitolite configuration based on your projects and user memberships in Redmine.
 
-Provides Gitolite hook, for automaticaly pulling changes to 
+Provides Gitolite hook, for automaticaly pulling changes to local clone of repository. You don't need to any access to your, this plugin will create local clone and keep it up to date. 
 
 Includes Public Key management views (extracted from http://plan.io).
 
@@ -26,6 +26,7 @@ Includes Public Key management views (extracted from http://plan.io).
 database (plugins)
   $ cd redmine/vendor/plugins
   $ git clone git://github.com/ivyl/redmine-gitolite.git
+  $ cd ../..
   $ rake db:migrate_plugins
 
 2. User running redmine (his key must be named named "redmine") must have RW+ access to gitolite-admin (assuming that you have gitolite installed).
