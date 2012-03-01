@@ -28,7 +28,7 @@ class GitoliteHookController < ApplicationController
   def update_repository(repository)
     origin = Setting.plugin_redmine_gitolite['developerBaseUrls'].lines.first
     origin = origin.gsub("%{name}", repository.project.identifier)
-    exec("git clone '#{origin}' '#{repository.url}' --bare") if !File.directory?(repo_location)
+    exec("git clone '#{origin}' '#{repository.url}' --bare") if !File.directory?(repository.url)
     exec("cd '#{repository.url}' && git fetch origin && git reset --soft FETCH_HEAD")
   end
 
