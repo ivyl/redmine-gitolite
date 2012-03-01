@@ -6,13 +6,8 @@ class GitoliteHookController < ApplicationController
 
   def index
     repository = find_repository
-
-    # Fetch the changes from Gitolite
     update_repository(repository)
-
-    # Fetch the new changesets into Redmine
     repository.fetch_changesets
-
     render(:text => 'OK')
   end
 
@@ -30,17 +25,13 @@ class GitoliteHookController < ApplicationController
     logger.debug { "GitoliteHook:  * STDERR: #{errors}"}
   end
 
-  # Fetches updates from the remote repository
   def update_repository(repository)
-    repo_location = Setting.plugin_redmine_gitolite['basePath'] + "/#{repository.project.identifier}"
     origin = Setting.plugin_redmine_gitolite['developerBaseUrls'].lines.first
     origin = origin.gsub("%{name}", repository.project.identifier)
-    exec("git clone '#{origin}' '#{repo_location}'") if !File.directory?(repo_location)
-    command = "cd '#{repo_location}' && git fetch origin && git reset --soft refs/remotes/origin/master"
-    exec(command)
+    exec("git clone '#{origin}' '#{repository.url}' --bare") if !File.directory?(repo_location)
+    exec("cd '#{repo_location}' && git fetch origin && git reset --soft refs/remotes/origin/master")
   end
 
-  # Gets the project identifier from the querystring parameters.
   def get_identifier
     identifier = params[:project_id]
     # TODO: Can obtain 'oldrev', 'newrev', 'refname', 'user' in POST params for further action if needed.
@@ -48,7 +39,6 @@ class GitoliteHookController < ApplicationController
     return identifier
   end
 
-  # Finds the Redmine project in the database based on the given project identifier
   def find_project
     identifier = get_identifier
     project = Project.find_by_identifier(identifier.downcase)
@@ -56,7 +46,6 @@ class GitoliteHookController < ApplicationController
     return project
   end
 
-  # Returns the Redmine Repository object we are trying to update
   def find_repository
     project = find_project
     repository = project.repository
