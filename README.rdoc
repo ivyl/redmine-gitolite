@@ -18,6 +18,7 @@ Includes Public Key management views (extracted from http://plan.io).
 === Other:
 * Gitolite server
 * accessible Git executable
+* curl
 
 
 == Setup:
@@ -34,7 +35,11 @@ database (plugins)
   $ ssh gitolite.server
   * [accept key]
 
-4. Add post-receive hook to common gitolite hooks (examples in contrib dir) and configure it
+4. Configure email and name of git user for your redmine account
+  $ git config --global user.email "redmine@gitolite.org"
+  $ git config --global user.name "Redmine Gitolite"
+
+5. Add post-receive hook to common gitolite hooks (examples in contrib dir) and configure it
 (host, api key, etc, see sources)
   $ sudo su - gitolite
   $ cat > .gitolite/hooks/common/post-receive
@@ -45,7 +50,7 @@ database (plugins)
   * [configure, in complex hook you can do this by git config options]
   $ chmod +x .gitolite/hooks/common/receive
 
-5. Configure plugin in redmine settings
+6. Configure plugin in redmine settings
   * [Adminitration -> Plugins -> Redmine Gitolite]
   * [Gitolite URL should be set to your gitolite-admin git repository]
   * [Base path should point directory which will hold local copies (must exist)
