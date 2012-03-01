@@ -9,7 +9,7 @@
 </pre>
 
 <h2>Permission Setup:</h2>
-<pre>  <%= link_to "Upload SSH Public Key", {:controller => 'my', :action => 'public_keys'} %>
+<pre>  <%= link_to "Upload SSH Public Key", {:controller => 'gitolite_public_keys', :action => 'index'} %>
   Add yourself as a project developer: <%= link_to @project.name + " Settings", {:controller => 'projects', :action => 'settings'} %> -&gt; Members Tab -&gt; New Member
 </pre>
 
