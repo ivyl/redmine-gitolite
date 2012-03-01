@@ -13,7 +13,7 @@ Includes Public Key management views (extracted from http://plan.io).
 == Requirements:
 
 === Gems:
-* net-ssh (ruby 1.9)
+* net-ssh
 * lockfile
 * {gitolite}[https://github.com/wingrunr21/gitolite/] (works with 1.8.7)
 
@@ -29,7 +29,7 @@ database (plugins)
   $ cd redmine/vendor/plugins
   $ git clone git://github.com/ivyl/redmine-gitolite.git
   $ cd ../..
-  $ rake db:migrate_plugins
+  $ RAILS_ENV=production rake db:migrate_plugins
 
 2. User running redmine (his key must be named named "redmine") must have RW+ access to gitolite-admin (assuming that you have gitolite installed).
 
