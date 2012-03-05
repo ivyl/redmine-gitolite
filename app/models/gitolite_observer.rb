@@ -7,7 +7,7 @@ class GitoliteObserver < ActiveRecord::Observer
   protected
   
   def update_repositories(object)
-    gr = GitoliteRedmine.new
+    gr = GitoliteRedmine::AdminHandler.new
     case object
       when Repository then gr.update_projects(object.project)
       when User then (gr.update_gitolite(object.projects) && gr.update_user(object)) unless is_login_save?(object)
