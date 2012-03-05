@@ -15,7 +15,7 @@ module GitoliteRedmine
           
           logger.debug "[Gitolite] Handling #{user.inspect}"
           add_active_keys(user.gitolite_public_keys.active)
-          remove_inactive_keys(usersgitolite_public_keys.inactive)
+          remove_inactive_keys(user.gitolite_public_keys.inactive)
           
           @repo.save
           @repo.apply
@@ -53,8 +53,9 @@ module GitoliteRedmine
     
     def clone(origin, local_dir)
       FileUtils.mkdir_p local_dir
-      `git clone #{origin} #{local_dir}`
-      @repo = Gitolite::GitoliteAdmin.new "#{local_dir}"
+      result = `git clone #{origin} #{local_dir}`
+      logger.debug result
+      @repo = Gitolite::GitoliteAdmin.new local_dir
     end
     
     def lock
@@ -83,11 +84,11 @@ module GitoliteRedmine
         @repo.config.add_repo(conf)
       end
       
-      conf.permissions = build_permissions users
+      conf.permissions = build_permissions(users, project)
     end
     
     def add_active_keys(keys) 
-      keys.ach do |key|
+      keys.each do |key|
         parts = key.key.split
         repo_keys = @repo.ssh_keys[key.user.login.underscore]
         repo_key = repo_keys.find_all{|k| k.location == key.title.underscore && k.owner == key.user.login.underscore}.first
@@ -111,7 +112,7 @@ module GitoliteRedmine
       end
     end
     
-    def build_permissions(users)
+    def build_permissions(users, project)
       write_users = users.select{|user| user.allowed_to?(:commit_access, project) }
       read_users = users.select{|user| user.allowed_to?(:view_changesets, project) && !user.allowed_to?(:commit_access, project) }
       
@@ -135,7 +136,7 @@ module GitoliteRedmine
         @@recursionCheck = true
         yield
       rescue Exception => e
-        puts e.inspect
+        logger.error "#{e.inspect} #{e.backtrace}"
       ensure
         @@recursionCheck = false
       end
