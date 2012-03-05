@@ -89,8 +89,7 @@ class GitoliteRedmine
     keys.ach do |key|
       parts = key.key.split
       repo_keys = @repo.ssh_keys[key.user.login.underscore]
-      repo_key = repo_keys.find_all{|k| k.location == key.title.underscore 
-                                     && k.owner == key.user.login.underscore}.first
+      repo_key = repo_keys.find_all{|k| k.location == key.title.underscore && k.owner == key.user.login.underscore}.first
       if repo_key
         repo_key.type, repo_key.blob, repo_key.email = parts
         repo_key.owner = key.user.login.underscore
@@ -106,8 +105,7 @@ class GitoliteRedmine
   def remove_inactive_keys(keys)
     keys.each do |key|
       repo_keys = @repo.ssh_keys[key.user.login.underscore]
-      repo_key = repo_keys.find_all{|k| k.location == key.title.underscore 
-                                     && k.owner == key.user.login.underscore}.first
+      repo_key = repo_keys.find_all{|k| k.location == key.title.underscore && k.owner == key.user.login.underscore}.first
       @repo.rm_key repo_key if repo_key
     end
   end
