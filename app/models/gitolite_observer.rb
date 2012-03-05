@@ -7,12 +7,13 @@ class GitoliteObserver < ActiveRecord::Observer
   protected
   
   def update_repositories(object)
+    gr = GitoliteRedmine.new
     case object
-      when Repository then GitoliteRedmine::update_repositories(object.project)
-      when User then GitoliteRedmine::update_repositories(object.projects) unless is_login_save?(object)
-      when GitolitePublicKey then GitoliteRedmine::update_repositories(object.user.projects)
-      when Member then GitoliteRedmine::update_repositories(object.project)
-      when Role then GitoliteRedmine::update_repositories(object.members.map(&:project).uniq.compact)
+      when Repository then gr.update_projects(object.project)
+      when User then (gr.update_gitolite(object.projects) && gr.update_user(object)) unless is_login_save?(object)
+      when GitolitePublicKey then gr.update_user(object.user)
+      when Member then gr.update_projects(object.project)
+      when Role then gr.update_projects(object.members.map(&:project).uniq.compact)
     end
   end
   
