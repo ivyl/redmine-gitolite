@@ -28,4 +28,11 @@ class GitolitePublicKey < ActiveRecord::Base
     
   def to_s ; title ; end
   
+  def location
+    self.title.underscore.gsub(/[^0-9a-zA-Z-_]/,'_')
+  end
+  
+  def owner
+    self.user.login.underscore.gsub(/[^0-9a-zA-Z-_]/,'_')
+  end
 end
