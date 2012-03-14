@@ -90,15 +90,15 @@ module GitoliteRedmine
     def add_active_keys(keys) 
       keys.each do |key|
         parts = key.key.split
-        repo_keys = @repo.ssh_keys[key.user.login.underscore]
-        repo_key = repo_keys.find_all{|k| k.location == key.title.underscore && k.owner == key.user.login.underscore}.first
+        repo_keys = @repo.ssh_keys[key.owner]
+        repo_key = repo_keys.find_all{|k| k.location == key.location && k.owner == key.owner}.first
         if repo_key
           repo_key.type, repo_key.blob, repo_key.email = parts
-          repo_key.owner = key.user.login.underscore
+          repo_key.owner = key.owner
         else
           repo_key = Gitolite::SSHKey.new(parts[0], parts[1], parts[2])
-          repo_key.location = key.title.underscore
-          repo_key.owner = key.user.login.underscore
+          repo_key.location = key.location
+          repo_key.owner = key.owner
           @repo.add_key repo_key
         end
       end
@@ -106,8 +106,8 @@ module GitoliteRedmine
     
     def remove_inactive_keys(keys)
       keys.each do |key|
-        repo_keys = @repo.ssh_keys[key.user.login.underscore]
-        repo_key = repo_keys.find_all{|k| k.location == key.title.underscore && k.owner == key.user.login.underscore}.first
+        repo_keys = @repo.ssh_keys[key.owner]
+        repo_key = repo_keys.find_all{|k| k.location == key.location && k.owner == key.owner}.first
         @repo.rm_key repo_key if repo_key
       end
     end
@@ -116,8 +116,8 @@ module GitoliteRedmine
       write_users = users.select{|user| user.allowed_to?(:commit_access, project) }
       read_users = users.select{|user| user.allowed_to?(:view_changesets, project) && !user.allowed_to?(:commit_access, project) }
       
-      write = write_users.map{|usr| usr.login.underscore}.sort
-      read = read_users.map{|usr| usr.login.underscore}.sort
+      write = write_users.map{|usr| usr.login.underscore.gsub(/[^0-9a-zA-Z-_]/,'_')}.sort
+      read = read_users.map{|usr| usr.login.underscore.gsub(/[^0-9a-zA-Z-_]/,'_')}.sort
       
       read << "redmine"
       read << "daemon" if User.anonymous.allowed_to?(:view_changesets, project)
