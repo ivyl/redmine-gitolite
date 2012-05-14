@@ -14,17 +14,17 @@
 </pre>
 
 <h2>Repository Setup:</h2>
-<pre>  cd <%= @project.identifier %>
+<pre>  cd <%= @project.repository.identifier %>
   git init
   git add .
   git commit -m 'Initializing <%= @project %> repository'
-  git remote add origin <%= Setting.plugin_redmine_gitolite['developerBaseUrls'].gsub("%{name}", @project.identifier) %>
+  git remote add origin <%= Setting.plugin_redmine_gitolite['developerBaseUrls'].gsub("%{name}", @project.repository.identifier) %>
   git push origin master
 </pre>
 
 <h2>Existing Git Repo?</h2>
 <pre>  cd existing_git_repo
-  git remote add origin <%= Setting.plugin_redmine_gitolite['developerBaseUrls'].gsub("%{name}", @project.identifier) %>
+  git remote add origin <%= Setting.plugin_redmine_gitolite['developerBaseUrls'].gsub("%{name}", @project.repository.identifier) %>
   git push origin master
 </pre>    
   
