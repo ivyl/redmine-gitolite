@@ -117,9 +117,11 @@ module GitoliteRedmine
     end
     
     def build_permissions(users, project)
-      write_users = users.select{|user| user.allowed_to?(:commit_access, project) }
-      read_users = users.select{|user| user.allowed_to?(:view_changesets, project) && !user.allowed_to?(:commit_access, project) }
+      rewind_users = users.select{|user| user.allowed_to?(:manage_repository, project) }
+      write_users = users.select{|user| user.allowed_to?(:commit_access, project) && !user.allowed_to?(:manage_repository, project) }
+      read_users = users.select{|user| user.allowed_to?(:view_changesets, project) && !user.allowed_to?(:commit_access, project) && !user.allowed_to?(:manage_repository, project) }
       
+      rewind = rewind_users.map{|usr| usr.login.underscore.gsub(/[^0-9a-zA-Z-_]/,'_')}.sort
       write = write_users.map{|usr| usr.login.underscore.gsub(/[^0-9a-zA-Z-_]/,'_')}.sort
       read = read_users.map{|usr| usr.login.underscore.gsub(/[^0-9a-zA-Z-_]/,'_')}.sort
       
@@ -128,7 +130,8 @@ module GitoliteRedmine
       read << "gitweb" if User.anonymous.allowed_to?(:view_gitweb, project)
       
       permissions = {}
-      permissions["RW+"] = {"" => write} unless write.empty?
+      permissions["RW+"] = {"" => rewind} unless rewind.empty?
+      permissions["RW"] = {"" => write} unless write.empty?
       permissions["R"] = {"" => read} unless read.empty?
       
       [permissions]
