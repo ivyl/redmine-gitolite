@@ -29,7 +29,7 @@ class GitoliteHookController < ApplicationController
     origin = Setting.plugin_redmine_gitolite['developerBaseUrls'].lines.first
     origin = origin.gsub("%{name}", repository.project.identifier)
     exec("git clone --mirror '#{origin}' '#{repository.url}'") if !File.directory?(repository.url)
-    exec("cd '#{repository.url}' && git fetch origin && git reset --soft FETCH_HEAD")
+    exec("cd '#{repository.url}' && git remote update")
   end
 
   def get_identifier
