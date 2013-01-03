@@ -28,6 +28,8 @@ class GitolitePublicKey < ActiveRecord::Base
     valid = check_key(key)
     if !valid
       begin
+        # We try validating again, after adding a newline, since some 4096-bit
+        # public keys fail validation when a newline isn't present
         key = "#{key}\n"
         valid = check_key(key)
         if !valid
@@ -36,7 +38,7 @@ class GitolitePublicKey < ActiveRecord::Base
           self.key = key
         end
       rescue
-        errors[:key] = "invalid key"
+        errors[:base] = "invalid key"
       end
     end
   end
