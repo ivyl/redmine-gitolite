@@ -48,7 +48,7 @@ module GitoliteRedmine
     private
     
     def local_dir
-      @local_dir ||= File.join(RAILS_ROOT,"tmp","redmine_gitolite_#{Time.now.to_i}")
+      @local_dir ||= File.join(Rails.root, "tmp", "redmine_gitolite_#{Time.now.to_i}")
     end
     
     def clone(origin, local_dir)
