@@ -26,9 +26,9 @@ Includes Public Key management views (extracted from http://plan.io).
 == Setup:
 1. Install Redmine and put this plugin in vendor/plugins directory and migrate
 database (plugins)
-  $ cd redmine/vendor/plugins
-  $ git clone git://github.com/ivyl/redmine-gitolite.git
-  $ cd ../..
+  $ cd redmine/plugins
+  $ git clone git://github.com/ivyl/redmine-gitolite.git redmine_gitolite
+  $ cd ..
   $ RAILS_ENV=production rake db:migrate_plugins
 
 2. User running redmine (his key must be named named "redmine") must have RW+ access to gitolite-admin (assuming that you have gitolite installed).
