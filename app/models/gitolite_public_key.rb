@@ -1,6 +1,5 @@
-require 'open3'
-
 class GitolitePublicKey < ActiveRecord::Base
+  unloadable
   STATUS_ACTIVE = 1
   STATUS_LOCKED = 0
 
@@ -9,8 +8,8 @@ class GitolitePublicKey < ActiveRecord::Base
   validates_uniqueness_of :identifier, :score => :user_id
   validates_presence_of :title, :key, :identifier
   
-  named_scope :active, {:conditions => {:active => GitolitePublicKey::STATUS_ACTIVE}}
-  named_scope :inactive, {:conditions => {:active => GitolitePublicKey::STATUS_LOCKED}}
+  scope :active, {:conditions => {:active => GitolitePublicKey::STATUS_ACTIVE}}
+  scope :inactive, {:conditions => {:active => GitolitePublicKey::STATUS_LOCKED}}
   
   validate :has_not_been_changed, :is_valid_key
   

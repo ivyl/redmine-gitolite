@@ -9,5 +9,5 @@ namespace :gitolite do
   task :fetch_changes => [:environment] do
     Repository.fetch_changesets
   end
-
 end
+

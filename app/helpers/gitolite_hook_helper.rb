@@ -1,0 +1,2 @@
+module GitoliteHookHelper
+end

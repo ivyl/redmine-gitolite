@@ -8,8 +8,7 @@
   </ul>
 <% end %>
 
-<% labelled_form_for :public_key, @gitolite_public_key, :url => { :action => "create" }, :lang => current_language do |f| %>
-
+<%= labelled_form_for :public_key, @gitolite_public_key, :url => { :action => "create" }, :lang => current_language do |f| %>
 	<%= render :partial => 'form', :locals => { :f => f } %>
 	<%= submit_tag l(:button_create) %>
 <% end %>

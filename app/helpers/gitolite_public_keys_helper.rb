@@ -5,5 +5,4 @@ module GitolitePublicKeysHelper
                         ["#{l(:status_active)} (#{key_count_by_active[GitolitePublicKey::STATUS_ACTIVE].to_i})", GitolitePublicKey::STATUS_ACTIVE],
                         ["#{l(:status_locked)} (#{key_count_by_active[GitolitePublicKey::STATUS_LOCKED].to_i})", GitolitePublicKey::STATUS_LOCKED]], selected)
   end
-  
 end

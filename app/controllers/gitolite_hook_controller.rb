@@ -1,6 +1,7 @@
 require 'open3'
 
 class GitoliteHookController < ApplicationController
+  unloadable
 
   skip_before_filter :verify_authenticity_token, :check_if_login_required
 
@@ -53,5 +54,4 @@ class GitoliteHookController < ApplicationController
     raise TypeError, "Repository for project '#{project.to_s}' ('#{project.identifier}') is not a Git repository" unless repository.is_a?(Repository::Git)
     return repository
   end
-
 end

@@ -1,4 +1,6 @@
 class GitoliteObserver < ActiveRecord::Observer
+  unloadable
+
   observe :project, :user, :gitolite_public_key, :member, :role, :repository
   
   def after_save(object) ; update_repositories(object) ; end
