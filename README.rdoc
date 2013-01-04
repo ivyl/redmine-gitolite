@@ -51,6 +51,8 @@ database (plugins)
   * [enable WS for repository management in administration->settings->repositories]
   * [copy generated API key]
   * [configure, in complex hook you can do this by git config options]
+  $ vim .gitolite.rc
+  * [add "hooks\.redmine_gitolite\..*" to the GIT_CONFIG_KEYS setting]
   $ chmod +x .gitolite/hooks/common/post-receive
   $ gl-setup
 

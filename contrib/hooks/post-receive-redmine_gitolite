@@ -1,5 +1,9 @@
 #!/bin/sh
 
+if [ "${GL_REPO}" = "gitolite-admin" ]; then
+    exit
+fi
+
 HOOK_URL=gitolite_hook
 FETCH_URL=sys/fetch_changesets
 LOG=/home/git/logs/post-receive.log
@@ -7,6 +11,7 @@ LOG=/home/git/logs/post-receive.log
 DEFAULT_REDMINE_KEY=your_redmine_api_key
 DEFAULT_REDMINE_SERVER=http://your.redmine.server.com
 DEFAULT_REDMINE_PROJECT_ID=$GL_REPO
+DEFAULT_REDMINE_REPO_ID=$GL_REPO
 DEFAULT_CURL_IGNORE_SECURITY_CFG="false"
 
 KEY=$(git config hooks.redmine_gitolite.key 2>/dev/null)
@@ -22,6 +27,11 @@ fi
 REDMINE_PROJECT_ID=$(git config hooks.redmine_gitolite.projectid 2>/dev/null)
 if [ -z "$REDMINE_PROJECT_ID" ]; then
     REDMINE_PROJECT_ID=$DEFAULT_REDMINE_PROJECT_ID
+fi
+
+REDMINE_REPO_ID=$(git config hooks.redmine_gitolite.repoid 2>/dev/null)
+if [ -z "$REDMINE_REPO_ID" ]; then
+    REDMINE_REPO_ID=$DEFAULT_REDMINE_REPO_ID
 fi
 
 CURL_IGNORE_SECURITY_CFG=$(git config --bool hooks.redmine_gitolite.curlignoresecurity 2>/dev/null)
@@ -46,7 +56,7 @@ echo
 while read old new refname; do
     echo "Hitting the Redmine Gitolite hook for $old $new $refname"
     echo -n "Response: "
-    curl $CURL_IGNORE_SECURITY -S -s -d "oldrev=$old&newrev=$new&refname=$refname&user=$GL_USER" "$REDMINE_SERVER/$HOOK_URL?project_id=$REDMINE_PROJECT_ID"
+    curl $CURL_IGNORE_SECURITY -S -s -d "oldrev=$old&newrev=$new&refname=$refname&user=$GL_USER" "$REDMINE_SERVER/$HOOK_URL?project_id=$REDMINE_PROJECT_ID&repo_id=$REDMINE_REPO_ID"
     echo ""
     echo ""
     echo "Hitting the Redmine fetch changesets URL"

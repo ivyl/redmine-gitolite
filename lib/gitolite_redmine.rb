@@ -29,7 +29,7 @@ module GitoliteRedmine
       recursion_check do
         projects = (projects.is_a?(Array) ? projects : [projects])
 
-        if projects.detect{|p| p.repository.is_a?(Repository::Git)} && lock
+        if projects.detect{|p| p.repositories.detect{|r| r.is_a?(Repository::Git)}} && lock
           clone(Setting.plugin_redmine_gitolite['gitoliteUrl'], local_dir)
           
           projects.select{|p| p.repository.is_a?(Repository::Git)}.each do |project|
@@ -75,16 +75,20 @@ module GitoliteRedmine
     
     def handle_project(project)
       users = project.member_principals.map(&:user).compact.uniq
+      proj_name = project.identifier.to_s
       
-      name = project.identifier.to_s
-      conf = @repo.config.repos[name]
+      project.repositories.select{|r| r.is_a?(Repository::Git)}.each do |repository|
+        name = repository.identifier.to_s
+        conf = @repo.config.repos[name]
       
-      unless conf
-        conf = Gitolite::Config::Repo.new(name)
-        @repo.config.add_repo(conf)
+        unless conf
+          conf = Gitolite::Config::Repo.new(name)
+          conf.set_git_config("hooks.redmine_gitolite.projectid", proj_name)
+          @repo.config.add_repo(conf)
+        end
+      
+        conf.permissions = build_permissions(users, project)
       end
-      
-      conf.permissions = build_permissions(users, project)
     end
     
     def add_active_keys(keys) 
@@ -113,9 +117,11 @@ module GitoliteRedmine
     end
     
     def build_permissions(users, project)
-      write_users = users.select{|user| user.allowed_to?(:commit_access, project) }
-      read_users = users.select{|user| user.allowed_to?(:view_changesets, project) && !user.allowed_to?(:commit_access, project) }
+      rewind_users = users.select{|user| user.allowed_to?(:manage_repository, project) }
+      write_users = users.select{|user| user.allowed_to?(:commit_access, project) && !user.allowed_to?(:manage_repository, project) }
+      read_users = users.select{|user| user.allowed_to?(:view_changesets, project) && !user.allowed_to?(:commit_access, project) && !user.allowed_to?(:manage_repository, project) }
       
+      rewind = rewind_users.map{|usr| usr.login.underscore.gsub(/[^0-9a-zA-Z-_]/,'_')}.sort
       write = write_users.map{|usr| usr.login.underscore.gsub(/[^0-9a-zA-Z-_]/,'_')}.sort
       read = read_users.map{|usr| usr.login.underscore.gsub(/[^0-9a-zA-Z-_]/,'_')}.sort
       
@@ -124,7 +130,8 @@ module GitoliteRedmine
       read << "gitweb" if User.anonymous.allowed_to?(:view_gitweb, project)
       
       permissions = {}
-      permissions["RW+"] = {"" => write} unless write.empty?
+      permissions["RW+"] = {"" => rewind} unless rewind.empty?
+      permissions["RW"] = {"" => write} unless write.empty?
       permissions["R"] = {"" => read} unless read.empty?
       
       [permissions]
