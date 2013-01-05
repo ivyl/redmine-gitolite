@@ -1,3 +1,7 @@
+require 'redmine'
+require_dependency 'principal'
+require_dependency 'user'
+
 require_dependency 'gitolite_redmine'
 require_dependency 'gitolite/patches/repositories_controller_patch'
 require_dependency 'gitolite/patches/repositories_helper_patch'
@@ -19,9 +23,6 @@ Redmine::Plugin.register :redmine_gitolite do
     'basePath' => '/home/redmine/repositories/',
   } 
 end
-
-# initialize association from user -> public keys
-User.send(:has_many, :gitolite_public_keys, :dependent => :destroy)
 
 # initialize hook
 class GitolitePublicKeyHook < Redmine::Hook::ViewListener
