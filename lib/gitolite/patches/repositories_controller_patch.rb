@@ -5,24 +5,25 @@ module GitoliteRedmine
 
       def show_with_git_instructions
         if @repository.is_a?(Repository::Git) and @repository.entries(@path, @rev).blank?
-          render :action => 'git_instructions' 
+          @repositories = @project.repositories
+          render :action => 'git_instructions'
         else
           show_without_git_instructions
         end
       end
-      
+
       def edit_with_scm_settings
-        git_parametrize 
+        git_parametrize
         edit_without_scm_settings
       end
 
       def update_with_scm_settings
-        git_parametrize 
+        git_parametrize
         update_without_scm_settings
       end
 
       def create_with_scm_settings
-        git_parametrize 
+        git_parametrize
         create_without_scm_settings
       end
 
@@ -37,7 +38,7 @@ module GitoliteRedmine
       end
 
       private
-      
+
       def git_parametrize
         params[:repository] ||= {}
         params[:repository][:extra_report_last_commit] = '1'
