@@ -59,7 +59,7 @@ module GitoliteRedmine
     end
     
     def lock
-      lockfile_path = File.join(RAILS_ROOT,"tmp",'redmine_gitolite_lock')
+      lockfile_path = File.join(::Rails.root,"tmp",'redmine_gitolite_lock')
       @lockfile = File.new(lockfile_path, File::CREAT|File::RDONLY)
       retries = 5
       while (retries -= 1) > 0
