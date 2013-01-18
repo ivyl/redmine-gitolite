@@ -17,12 +17,15 @@ Redmine::Plugin.register :redmine_gitolite do
   url 'https://github.com/ivyl/redmine-gitolite/'
   author_url 'http://ivyl.0xcafe.eu/'
 
-  settings :default => {
-    'gitoliteUrl' => 'gitolite@localhost:gitolite-admin.git',
-    'developerBaseUrls' => "git@example.com:%{name}.git",
-    'readOnlyBaseUrls' => 'http://example.com/git/%{name}',
-    'basePath' => '/home/redmine/repositories/',
-  } 
+  settings({
+    :partial => 'settings/redmine_gitolite',
+    :default => {
+      'gitoliteUrl' => 'gitolite@localhost:gitolite-admin.git',
+      'developerBaseUrls' => "git@example.com:%{name}.git",
+      'readOnlyBaseUrls' => 'http://example.com/git/%{name}',
+      'basePath' => '/home/redmine/repositories/',
+	}
+  })
 end
 
 # initialize hook
