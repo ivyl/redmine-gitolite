@@ -1,3 +1,5 @@
+require 'open3'
+
 class GitolitePublicKey < ActiveRecord::Base
   unloadable
   STATUS_ACTIVE = 1
