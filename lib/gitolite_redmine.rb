@@ -59,7 +59,7 @@ module GitoliteRedmine
     end
     
     def lock
-      lockfile_path = File.join(RAILS_ROOT,"tmp",'redmine_gitolite_lock')
+      lockfile_path = File.join(::Rails.root,"tmp",'redmine_gitolite_lock')
       @lockfile = File.new(lockfile_path, File::CREAT|File::RDONLY)
       retries = 5
       while (retries -= 1) > 0
@@ -119,7 +119,7 @@ module GitoliteRedmine
       write = write_users.map{|usr| usr.login.underscore.gsub(/[^0-9a-zA-Z\-\_]/,'_')}.sort
       read = read_users.map{|usr| usr.login.underscore.gsub(/[^0-9a-zA-Z\-\_]/,'_')}.sort
       
-      read << "redmine"
+      read << Setting.plugin_redmine_gitolite['redmineUser']
       read << "daemon" if User.anonymous.allowed_to?(:view_changesets, project)
       read << "gitweb" if User.anonymous.allowed_to?(:view_gitweb, project)
       

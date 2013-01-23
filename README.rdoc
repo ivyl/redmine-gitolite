@@ -60,12 +60,14 @@ database (plugins)
   * [Base path should point directory which will hold local copies (must exist)
   * [Set developer and ro urls as in given examples (just slightly modify them)]
   * [%{name} will be replaced with your repository identifier]
+  * [Set username the name your redmine instance will run as (default: redmine)]
 
 == Pro Tips:
 
 * You should manage your keys only from Redmine to avoid conflicts.
 * Need new bare git repo? Create it via Redmine, disable other features.
 * This is most convenient way to manage keys by your user.
+* If your instance runs as www-data, gitolite may see you as "www". Set your username as www to compensate.
 
 == Found bug?
 
