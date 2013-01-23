@@ -20,6 +20,7 @@ Redmine::Plugin.register :redmine_gitolite do
   settings({
     :partial => 'settings/redmine_gitolite',
     :default => {
+      'redmineUser' => 'redmine',
       'gitoliteUrl' => 'gitolite@localhost:gitolite-admin.git',
       'developerBaseUrls' => "git@example.com:%{name}.git",
       'readOnlyBaseUrls' => 'http://example.com/git/%{name}',

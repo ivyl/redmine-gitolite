@@ -4,6 +4,7 @@ en:
   label_public_key_new: New public key
   label_gitolite_url: Gitolite URL
   label_gitolite_identity_file: Gitolite identity file
+  label_redmine_user: User redmine runs as
   label_base_path: Base path
   label_developer_base_urls: Developer base URL(s)
   label_read_only_base_urls: Read-only base URL(s)

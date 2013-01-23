@@ -119,7 +119,7 @@ module GitoliteRedmine
       write = write_users.map{|usr| usr.login.underscore.gsub(/[^0-9a-zA-Z\-\_]/,'_')}.sort
       read = read_users.map{|usr| usr.login.underscore.gsub(/[^0-9a-zA-Z\-\_]/,'_')}.sort
       
-      read << "redmine"
+      read << Setting.plugin_redmine_gitolite['redmineUser']
       read << "daemon" if User.anonymous.allowed_to?(:view_changesets, project)
       read << "gitweb" if User.anonymous.allowed_to?(:view_gitweb, project)
       
